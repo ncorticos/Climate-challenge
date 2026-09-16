@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compare Two Places — IPMA Classroom Exercise</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{
+    --bg:#121f24; --card:#1e3038; --card2:#22363f; --ink:#f2f5f4; --muted:#a9bcc2;
+    --accent:#e8a94b; --teal:#57b6a3; --red:#e05a4f; --blue:#5aa9e6; --green:#6fce7e; --purple:#9b7ede;
+    --line:#2e454f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);padding:24px;min-height:100vh}
+  .wrap{max-width:1100px;margin:0 auto}
+  header.top{margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+  header.top h1{font-size:28px;letter-spacing:.2px}
+  header.top p{color:var(--muted);margin-top:6px;font-size:14px}
+  .lang{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+  .lang button{border:none;background:transparent;color:var(--muted);font-weight:800;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer}
+  .lang button.active{background:var(--accent);color:#102027}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .card h2{font-size:22px;margin-bottom:12px}
+  .card h3{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 10px;border-top:1px solid var(--line);padding-top:16px}
+  .card p.brief{color:#d6e2e5;font-size:15px;line-height:1.55;margin-bottom:10px}
+  .form-row{display:flex;gap:12px;margin-bottom:12px}
+  .form-row .fg{flex:1}
+  @media(max-width:560px){.form-row{flex-direction:column}}
+  .fg{margin-bottom:4px}
+  .fg label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .fg input,.fg select,.fg textarea{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:#15262d;color:var(--ink);font-size:15px}
+  .fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--teal);background:#102027}
+  .fg textarea{min-height:74px;resize:vertical}
+  .city-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .mono{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#102027;flex-shrink:0}
+  .mono.a{background:linear-gradient(135deg,var(--red),var(--accent))}
+  .mono.b{background:linear-gradient(135deg,var(--blue),var(--teal))}
+  .city-head input{flex:1}
+  .btn{width:100%;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:12px;color:#102027;background:linear-gradient(135deg,var(--teal),#7fd1bd)}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.mail{background:linear-gradient(135deg,var(--accent),#f3c46b);margin-top:10px}
+  .pair-list{list-style:none;margin-top:8px;display:grid;gap:6px;font-size:14px}
+  .pair-list button{width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px}
+  .pair-list button:hover{border-color:var(--accent)}
+  .pair-list button.active{border-color:var(--accent);background:#2b4250}
+  .accent{color:var(--accent)}
+  .result{display:none;margin-top:18px}
+  .result.show{display:block}
+  .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+  @media(max-width:640px){.kpi{grid-template-columns:repeat(2,1fr)}}
+  .kpi div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+  .kpi b{display:block;font-size:19px}
+  .kpi span{font-size:12px;color:var(--muted)}
+  svg.chart{width:100%;height:auto;display:block}
+  .utci-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin-top:14px}
+  @media(max-width:640px){.utci-wrap{grid-template-columns:1fr}}
+  .utci-card{background:#f4f6f5;color:#1c2b31;border-radius:16px;padding:16px;text-align:center}
+  .utci-card h4{font-size:19px;margin-bottom:8px;word-break:break-word}
+  .utci-track{height:26px;background:#dde3e3;border-radius:13px;position:relative;overflow:hidden}
+  .utci-fill{position:absolute;inset:0;background:linear-gradient(90deg,#1b2f4b,#2e6da4,#4aa3df,#7fd1bd,#a8d86f,#f2d24b,#ef9b3c,#d95f43,#8b1e1e)}
+  .utci-pointer{position:absolute;top:-4px;width:5px;height:34px;background:#111;border-radius:3px;transform:translateX(-50%)}
+  .utci-scale{display:flex;justify-content:space-between;font-size:12px;color:#6b7d83;margin-top:5px}
+  .utci-tag{display:inline-block;margin-top:8px;padding:5px 14px;border-radius:20px;color:#fff;font-weight:700;font-size:13px}
+  .utci-name{font-weight:800;margin-top:6px;font-size:15px}
+  .vs{align-self:center;font-size:26px;color:var(--muted)}
+  .verdict{background:#20333c;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:14px;margin-top:14px;font-size:15px;line-height:1.55}
+  .advice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  @media(max-width:640px){.advice{grid-template-columns:1fr}}
+  .advice div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13.5px;line-height:1.5}
+  .advice b{display:block;margin-bottom:6px}
+  #board{display:grid;gap:10px;margin-top:14px}
+  .sub{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13.5px;line-height:1.5}
+  .sub small{color:var(--muted)}
+  .small{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .stats div{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:13px}
+  .stats b{font-size:17px}
+  .grade-row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .grade-row input{width:76px;padding:7px 9px;border-radius:8px;border:1.5px solid var(--line);background:#15262d;color:var(--ink);font-size:14px}
+  .grade-row button{border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px;cursor:pointer;background:var(--accent);color:#102027}
+  .grade-row button.ghost2{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .pill{display:inline-block;padding:3px 12px;border-radius:20px;font-weight:800;font-size:13px;margin-left:8px}
+  .auto{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+  details.rubric{margin-top:10px;font-size:13px;color:#d6e2e5}
+  details.rubric summary{cursor:pointer;color:var(--accent);font-weight:700}
+  .pick3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+  @media(max-width:560px){.pick3{grid-template-columns:1fr}}
+  .pick{border:1.5px solid var(--line);background:#15262d;color:var(--ink);border-radius:12px;padding:12px;cursor:pointer;font-weight:800;font-size:14px;text-align:center}
+  .pick small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:4px}
+  .pick.onA{border-color:var(--red);background:#2c2320;box-shadow:0 0 0 2px var(--red) inset}
+  .pick.onB{border-color:var(--blue);background:#1d2833;box-shadow:0 0 0 2px var(--blue) inset}
+  .pick.onE{border-color:var(--accent);background:#2c2718;box-shadow:0 0 0 2px var(--accent) inset}
+  .whygrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+  @media(max-width:560px){.whygrid{grid-template-columns:1fr}}
+  .why{border:1.5px solid var(--line);background:#15262d;border-radius:10px;padding:9px 10px;font-size:13.5px;cursor:pointer;display:flex;gap:8px;align-items:flex-start;line-height:1.4}
+  .why.on{border-color:var(--teal);background:#142e2a}
+  .why input{display:none}
+  .why span{text-align:center;width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 data-i18n="title">Compare Two Places Yourself</h1>
+      <p><span data-i18n="subtitle2">simplified IPMA classroom exercise. Two PDFs. Four numbers. One conclusion.</span></p>
+    </div>
+    <div class="lang"><button id="btnEN" class="active">EN</button><button id="btnPT">PT</button></div>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2 data-i18n="yourComp">Your comparison</h2>
+      <p class="brief" data-i18n="brief">Each pair gets a different pair of Portuguese cities — find your number on the list. Open IPMA's Fichas Climatológicas 1991–2020 for both and enter: annual mean, July maximum, annual precipitation, diurnal amplitude.</p>
+
+      <h3 data-i18n="students">Students (in line)</h3>
+      <div class="fg"><label data-i18n="stu1">Student 1</label>
+        <div class="form-row" style="margin-bottom:0">
+          <div class="fg"><input id="s1f" data-i18n-ph="phFirst" placeholder="First name"></div>
+          <div class="fg"><input id="s1l" data-i18n-ph="phLast" placeholder="Surname"></div>
+        </div>
+      </div>
+      <div class="fg"><label data-i18n="stu2">Student 2</label>
+        <div class="form-row" style="margin-bottom:0">
+          <div class="fg"><input id="s2f" data-i18n-ph="phFirst" placeholder="First name"></div>
+          <div class="fg"><input id="s2l" data-i18n-ph="phLast" placeholder="Surname"></div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="fg"><label data-i18n="pairNo">Pair nº (1–16)</label><input id="pairNo" inputmode="numeric" placeholder="e.g. 6"></div>
+        <div class="fg"><label data-i18n="period">Station / period (cite)</label><input id="period" value="IPMA 1991–2020"></div>
+      </div>
+
+      <h3 data-i18n="siteA">Site A</h3>
+      <div class="city-head"><div class="mono a" id="monoA">A</div><div class="fg" style="flex:1"><select id="cityA"></select></div></div>
+      <div class="form-row">
+        <div class="fg"><label data-i18n="mean">Annual mean °C</label><input id="aMean" type="number" step="0.1" placeholder="12.5"></div>
+        <div class="fg"><label data-i18n="jul">July max °C</label><input id="aJul" type="number" step="0.1" placeholder="28.0"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label data-i18n="rain">Annual precip. mm</label><input id="aRain" type="number" step="1" placeholder="1200"></div>
+        <div class="fg"><label data-i18n="amp">Diurnal amplitude K</label><input id="aAmp" type="number" step="0.1" placeholder="12.0"></div>
+      </div>
+
+      <h3 data-i18n="siteB">Site B</h3>
+      <div class="city-head"><div class="mono b" id="monoB">B</div><div class="fg" style="flex:1"><select id="cityB"></select></div></div>
+      <div class="form-row">
+        <div class="fg"><label data-i18n="mean">Annual mean °C</label><input id="bMean" type="number" step="0.1" placeholder="17.5"></div>
+        <div class="fg"><label data-i18n="jul">July max °C</label><input id="bJul" type="number" step="0.1" placeholder="29.5"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label data-i18n="rain">Annual precip. mm</label><input id="bRain" type="number" step="1" placeholder="700"></div>
+        <div class="fg"><label data-i18n="amp">Diurnal amplitude K</label><input id="bAmp" type="number" step="0.1" placeholder="9.0"></div>
+      </div>
+
+      <h3 data-i18n="concl">Conclusion — which needs thermal mass, and why?</h3>
+      <div class="fg"><label data-i18n="pickL">1 · Tick the city that needs mass more</label>
+        <div class="pick3">
+          <button type="button" class="pick" id="pickA">A<small id="pickAsub">City A</small></button>
+          <button type="button" class="pick" id="pickB">B<small id="pickBsub">City B</small></button>
+          <button type="button" class="pick" id="pickE"><span data-i18n="pickE">Both / equal</span><small data-i18n="pickEsub">same need</small></button>
+        </div>
+      </div>
+      <div class="fg"><label data-i18n="whyL">2 · Which city calls for a more compact form?</label>
+        <div class="pick3">
+          <button type="button" class="pick" id="formA">A<small id="formAsub">City A</small></button>
+          <button type="button" class="pick" id="formB">B<small id="formBsub">City B</small></button>
+          <button type="button" class="pick" id="formE"><span data-i18n="pickE">Both / equal</span><small data-i18n="pickEsub">same need</small></button>
+        </div>
+      </div>
+      <div class="fg"><label data-i18n="winL">3 · Which city can take larger windows?</label>
+        <div class="pick3">
+          <button type="button" class="pick" id="winA">A<small id="winAsub">City A</small></button>
+          <button type="button" class="pick" id="winB">B<small id="winBsub">City B</small></button>
+          <button type="button" class="pick" id="winE"><span data-i18n="pickE">Both / equal</span><small data-i18n="pickEsub">same need</small></button>
+        </div>
+      </div>
+      <button class="btn" id="compareBtn" data-i18n="compare">Compare climates</button>
+      <button class="btn mail" id="submitBtn" style="display:none" data-i18n="submit">Submit — add to board + email teacher</button>
+      <p class="small" style="margin-top:8px" data-i18n="imgNote">Note: this model cannot read image.png uploads, so cities are shown as monogram tiles (initials + colour), not photos.</p>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="yourPair">Your pair</h2>
+      <p class="brief"><span data-i18n="pairBrief">Click your number to autofill the two cities.</span></p>
+      <button class="btn ghost" id="ipmaBtn" data-i18n="ipmaBtn">↗ Open IPMA — climate sheets 1991–2020</button>
+      <div class="fg"><label data-i18n="demo">Quick fill demo values (one click)</label>
+        <select id="demo"><option value="" data-i18n="demo0">— choose to preview —</option><option value="coast" data-i18n="demo1">Grande Lisboa VS Beiras e Serra da Estrela (example numbers)</option><option value="hot" data-i18n="demo2">Algarve VS Terras de Trás-os-Montes (example numbers)</option></select>
+      </div>
+      <ul class="pair-list" id="pairList"></ul>
+      <p class="brief" style="margin-top:14px"><span class="accent" data-i18n="slogan">Two PDFs. Four numbers. One conclusion.</span><br><span data-i18n="slogan2">Five minutes, in pairs. Cite the station and the period.</span></p>
+
+      <div class="result" id="result">
+        <h3 style="border:none;padding:0;margin:14px 0 6px" data-i18n="chartT">Diverging chart — from the centre</h3>
+        <svg class="chart" id="chart" viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg">
+          <g id="gBars"></g><g id="gTxt"></g><g id="gLeg"></g>
+        </svg>
+        <div class="kpi">
+          <div><b id="kMean">–</b><span data-i18n="kMean">annual mean Δ%</span></div>
+          <div><b id="kJul">–</b><span data-i18n="kJul">July max Δ%</span></div>
+          <div><b id="kRain">–</b><span data-i18n="kRain">precipitation Δ%</span></div>
+          <div><b id="kAmp">–</b><span data-i18n="kAmp">amplitude Δ%</span></div>
+        </div>
+        <h3 style="border:none;padding:0;margin:6px 0" data-i18n="utciT">UTCI assessment — July max on −5…+45 °C</h3>
+        <div class="utci-wrap">
+          <div class="utci-card"><h4 id="uCityA">City A</h4><div class="utci-track"><div class="utci-fill"></div><div class="utci-pointer" id="uPtrA"></div></div><div class="utci-scale"><span>−5 °C</span><span>+45 °C</span></div><div class="utci-tag" id="uTagA">–</div><div class="utci-name" id="uValA">–</div></div>
+          <div class="vs">↔</div>
+          <div class="utci-card"><h4 id="uCityB">City B</h4><div class="utci-track"><div class="utci-fill"></div><div class="utci-pointer" id="uPtrB"></div></div><div class="utci-scale"><span>−5 °C</span><span>+45 °C</span></div><div class="utci-tag" id="uTagB">–</div><div class="utci-name" id="uValB">–</div></div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+        <div class="advice" id="advice"></div>
+        <p class="small" id="details" style="margin-top:10px"></p>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <h2><span data-i18n="board">Submissions board</span> <span class="small" data-i18n="boardSub">(this page — every push adds a card below)</span></h2>
+    <div class="stats"><div><b id="stN">0</b><br><span data-i18n="stSub">submissions</span></div><div><b id="stG">–</b><br><span data-i18n="stAvg">avg teacher grade /20</span></div><div><b id="stA">–</b><br><span data-i18n="stAuto">avg auto-check /20</span></div></div>
+    <details class="rubric"><summary data-i18n="rubT">Grading rubric (0–20) — click to see</summary><div data-i18n="rubD" style="margin-top:6px">Data 4 · Diffs 4 · Conclusion 6 · Citation+names 6. Auto-check is a suggestion; your grade rules.</div></details>
+    <div id="board"></div>
+    <div class="form-row" style="margin-top:10px"><div class="fg"><button class="btn ghost" id="csvBtn">CSV ↓</button></div><div class="fg"><button class="btn ghost" id="clearBtn" data-i18n="clear">Clear board (this browser only)</button></div></div>
+  </section>
+</div>
+
+<script>
+let LANG="en";
+const I18N={
+en:{title:"Compare Two Places Yourself",subtitle:"Inspired by",subtitle2:"IPMA classroom exercise. Two Students. Four numbers. One conclusion.",yourComp:"Your comparison",brief:"Each pair gets a different pair of Portuguese NUTS3 regions — find your number on the list. Open IPMA Dataclima for both and enter: air average, July air maximum, total precipitation, diurnal amplitude (max − min).",students:"Students (in line)",s1f:"Student 1 — first name",s1l:"Student 1 — last name",s2f:"Student 2 — first name",s2l:"Student 2 — last name",phFirst:"First name",phLast:"Surname",pairNo:"Pair nº (1–16)",period:"Station / period (cite)",siteA:"Site A",siteB:"Site B",mean:"Air average °C",jul:"July air maximum °C",rain:"Total precipitation mm",amp:"Diurnal amplitude (max − min) K",concl:"Conclusion",phWhy:"e.g. Guarda needs mass + night flush: July 28°C with 12K swing…",compare:"Compare climates",submit:"Submit — add to board + email teacher",imgNote:"Note: this model cannot read image.png uploads, so regions are shown as monogram tiles (initials + colour), not photos.",yourPair:"Your pair",pairBrief:"Click your number to autofill the two regions.",ipmaBtn:"↗ Open IPMA — climate sheets 1991–2020",demo:"Quick fill demo values (one click)",demo0:"— choose to preview —",demo1:"Grande Lisboa VS Beiras e Serra da Estrela (example numbers)",demo2:"Algarve VS Terras de Trás-os-Montes (example numbers)",slogan:"Two Students. Four numbers. One conclusion.",slogan2:"Five minutes, in pairs.",chartT:"Diverging chart — from the centre",kMean:"air average Δ%",kJul:"July air max Δ%",kRain:"total precipitation Δ%",kAmp:"amplitude Δ%",utciT:"UTCI assessment — July max on −5…+45 °C",board:"Submissions board",boardSub:"(this page — every push adds a card below)",clear:"Clear board (this browser only)",empty:"No submissions yet. Compare, then press Submit.",rowMean:"Air average",rowJul:"July air max",rowRain:"Total precipitation",rowAmp:"Diurnal ampl.",alertNames:"Enter both students' first + last names.",alertNums:"Fill the 4 IPMA numbers for both regions.",alertFirst:"Compare first.",sameHeat:"Same July heat",isWarmer:"is warmer",verdictA:"Verdict —",verdictB:"needs thermal mass more.",eqSwing:"equal swing — hotter July day drives the call",bigSwing:"larger diurnal swing stores day heat and flushes it at night",julyD:"July Δ",amplD:"amplitude Δ",overall:"Overall difference",noNote:"no note",massW:"mass",pairW:"pair",uExtreme:"Extreme heat stress",uStrong:"Strong heat stress",uMod:"Moderate heat stress",uNone:"No thermal stress",uSlight:"Slight cool stress",uCool:"Cool stress",uCold:"Cold stress",julMax:"°C July max",st1:"Deep shading + ventilated mass; night flush essential.",st2:"Shading + exposed mass; cross-ventilate afternoons.",st3:"Light shading; mass to smooth the day.",st4:"Insulate + retain gains; mass for stability.",stSwingHi:"Swing ≥11 K — mass pays off most here.",stSwingLo:"Swing <11 K — mass helps, less decisive.",stWet:"Wet year — ventilate envelope, protect mass from damp.",stDry:"Dry year — courtyard + evaporative cooling possible."},
+pt:{title:"Comparem Dois Lugares",subtitle:"Inspirado no",subtitle2:"exercício IPMA para a aula. Dois Estudantes. Quatro números. Uma conclusão.",yourComp:"A vossa comparação",brief:"Cada par recebe um par diferente de regiões NUTS3 portuguesas — encontrem o vosso número na lista. Abram o Dataclima do IPMA para ambas e introduzam: temperatura média do ar, máxima do ar em julho, precipitação total, amplitude diurna (máx − mín).",students:"Estudantes (em linha)",s1f:"Estudante 1 — nome próprio",s1l:"Estudante 1 — apelido",s2f:"Estudante 2 — nome próprio",s2l:"Estudante 2 — apelido",phFirst:"Nome próprio",phLast:"Apelido",pairNo:"Par nº (1–16)",period:"Estação / período (citar)",siteA:"Sítio A",siteB:"Sítio B",mean:"Temperatura média do ar °C",jul:"Máx. do ar em julho °C",rain:"Precipitação total mm",amp:"Amplitude diurna (máx − mín) K",concl:"Conclusão",phWhy:"p. ex. a Guarda precisa de massa + descarga noturna: julho 28°C com 12K de amplitude…",compare:"Comparar climas",submit:"Submeter — adicionar ao painel + enviar email",imgNote:"Nota: este modelo não lê uploads image.png, por isso as cidades aparecem como monogramas (iniciais + cor), não fotos.",yourPair:"O vosso par",pairBrief:"Cliquem no número para preencher as regiões.",ipmaBtn:"↗ Abrir IPMA — fichas climatológicas 1991–2020",demo:"Preenchimento rápido de demonstração (um clique)",demo0:"— escolher para pré-visualizar —",demo1:"Grande Lisboa VS Beiras e Serra da Estrela (números de exemplo)",demo2:"Algarve VS Terras de Trás-os-Montes (números de exemplo)",slogan:"Dois Estudantes. Quatro números. Uma conclusão.",slogan2:"Cinco minutos, em pares.",chartT:"Gráfico divergente — a partir do centro",kMean:"média do ar Δ%",kJul:"máx. ar julho Δ%",kRain:"precipitação total Δ%",kAmp:"amplitude Δ%",utciT:"Avaliação UTCI — máx. julho em −5…+45 °C",board:"Painel de submissões",boardSub:"(nesta página — cada submissão adiciona um cartão)",clear:"Limpar painel (apenas neste navegador)",empty:"Ainda sem submissões. Comparem e submetam.",rowMean:"Média do ar",rowJul:"Máx. ar julho",rowRain:"Precipitação total",rowAmp:"Ampl. diurna",alertNames:"Introduzam o nome próprio + apelido de ambos os estudantes.",alertNums:"Preencham os 4 números IPMA de ambas as cidades.",alertFirst:"Comparem primeiro.",sameHeat:"Calor igual em julho",isWarmer:"é mais quente",verdictA:"Veredito —",verdictB:"precisa mais de massa térmica.",eqSwing:"amplitude igual — o dia de julho mais quente decide",bigSwing:"maior amplitude diurna acumula calor de dia e liberta-o à noite",julyD:"Δ julho",amplD:"Δ amplitude",overall:"Diferença global",noNote:"sem nota",massW:"massa",pairW:"par",uExtreme:"Stress extremo por calor",uStrong:"Forte stress por calor",uMod:"Stress moderado por calor",uNone:"Sem stress térmico",uSlight:"Ligeiro stress por frio",uCool:"Stress por frio",uCold:"Stress por frio intenso",julMax:"°C máx. julho",st1:"Sombreamento profundo + massa ventilada; descarga noturna essencial.",st2:"Sombreamento + massa exposta; ventilar à tarde.",st3:"Sombreamento ligeiro; massa para suavizar o dia.",st4:"Isolar + reter ganhos; massa para estabilidade.",stSwingHi:"Amplitude ≥11 K — a massa rende mais aqui.",stSwingLo:"Amplitude <11 K — a massa ajuda, menos decisiva.",stWet:"Ano húmido — ventilar a envolvente, proteger a massa da humidade.",stDry:"Ano seco — pátio + arrefecimento evaporativo possíveis."}
+};
+Object.assign(I18N.en,{stSub:"submissions",stAvg:"avg teacher grade /20",stAuto:"avg auto-check /20",rubT:"Grading rubric (0–20) — click to see",rubD:"Data 4 · Diffs 4 · Conclusion 6 · Citation+names 6. Auto-check is a suggestion; your grade rules.",gradePh:"0–20",gradeBtn:"Save grade",gradeDel:"✕ grade",fbPh:"feedback (optional)…",autoL:"auto-check",teachL:"teacher",nograde:"ungraded",csvT:"CSV ↓"});
+Object.assign(I18N.pt,{stSub:"submissões",stAvg:"média do docente /20",stAuto:"média auto-check /20",rubT:"Grelha de avaliação (0–20) — clicar para ver",rubD:"Dados 4 · Diffs 4 · Conclusão 6 · Citação+nomes 6. O auto-check é uma sugestão; a vossa nota prevalece.",gradePh:"0–20",gradeBtn:"Guardar nota",gradeDel:"✕ nota",fbPh:"feedback (opcional)…",autoL:"auto-check",teachL:"docente",nograde:"sem nota",csvT:"CSV ↓"});
+Object.assign(I18N.en,{pickL:"1 · Tick the region that needs mass more",whyL:"2 · Tick why (all that apply)",noteL:"3 · Extra note (optional)",pickE:"Both / equal",pickEsub:"same need",wSwing:"Larger diurnal swing — mass damps the day peak",wHot:"Hotter July maximum — more heat to store",wNights:"Cool nights — night flush can discharge the mass",wDry:"Drier year — mass + courtyard work safely",needPick:"Tick which region needs thermal mass (A, B or Both).",yourAns:"Your answer",computed:"Computed",match:"✓ match",mismatch:"✗ differs — discuss why",winL:"3 · Which city can take larger windows?",needWin:"Tick which city can take larger windows (A, B or Both).",winAns:"Larger windows suit",winWhy:"cooler July, lower overheating risk",whyL:"2 · Which city calls for a more compact form?",needForm:"Tick which city calls for a more compact form (A, B or Both).",formAns:"Compact form suits",formWhy:"colder year, lower heat loss",stu1:"Student 1",stu2:"Student 2",mMass:"Mass",mForm:"Form",mWin:"Windows",ansT:"Answers"});
+Object.assign(I18N.pt,{pickL:"1 · Assinalem a cidade que precisa mais de massa",whyL:"2 · Assinalem porquê (tudo o que se aplicar)",noteL:"3 · Nota extra (opcional)",pickE:"Ambas / igual",pickEsub:"mesma necessidade",wSwing:"Maior amplitude diurna — a massa amortece o pico",wHot:"Julho mais quente — mais calor para armazenar",wNights:"Noites frescas — a descarga noturna funciona",wDry:"Ano mais seco — massa + pátio funcionam bem",needPick:"Assinalem que cidade precisa de massa térmica (A, B ou Ambas).",yourAns:"A vossa resposta",computed:"Calculado",match:"✓ coincide",mismatch:"✗ difere — discutam porquê",winL:"3 · Qual cidade pode ter janelas maiores?",needWin:"Assinalem qual cidade pode ter janelas maiores (A, B ou Ambas).",winAns:"Janelas maiores para",winWhy:"julho mais fresco, menor risco de sobreaquecimento",whyL:"2 · Qual cidade pede uma forma mais compacta?",needForm:"Assinalem qual cidade pede uma forma mais compacta (A, B ou Ambas).",formAns:"Forma compacta para",formWhy:"ano mais frio, menos perdas térmicas",stu1:"Estudante 1",stu2:"Estudante 2",mMass:"Massa",mForm:"Forma",mWin:"Janelas",ansT:"Respostas"});
+Object.assign(I18N.pt,{alertNums:"Preencham os 4 números IPMA de ambas as regiões.",imgNote:"Nota: este modelo não lê uploads image.png, por isso as regiões aparecem como monogramas (iniciais + cor), não fotos.",pickL:"1 · Assinalem a região que precisa mais de massa",needPick:"Assinalem que região precisa de massa térmica (A, B ou Ambas).",winL:"3 · Qual região pode ter janelas maiores?",needWin:"Assinalem qual região pode ter janelas maiores (A, B ou Ambas).",whyL:"2 · Qual região pede uma forma mais compacta?",needForm:"Assinalem qual região pede uma forma mais compacta (A, B ou Ambas).",uExtreme:"Stress de calor extremo",uStrong:"Stress de calor forte",uMod:"Stress de calor moderado",uSlight:"Stress de frio ligeiro",uCool:"Stress de frio",uCold:"Stress de frio intenso",julyD:"julho Δ",amplD:"amplitude Δ",sameHeat:"Mesmo calor em julho"});
+const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
+const NUTS3=[["Norte",["Alto Minho","Cávado","Ave","Área Metropolitana do Porto","Alto Tâmega e Barroso","Tâmega e Sousa","Douro","Terras de Trás-os-Montes"]],["Centro",["Região de Aveiro","Região de Coimbra","Região de Leiria","Viseu Dão Lafões","Beira Baixa","Beiras e Serra da Estrela"]],["Oeste e Vale do Tejo",["Oeste","Médio Tejo","Lezíria do Tejo"]],["Grande Lisboa",["Grande Lisboa"]],["Península de Setúbal",["Península de Setúbal"]],["Alentejo",["Alentejo Litoral","Baixo Alentejo","Alto Alentejo","Alentejo Central"]],["Algarve",["Algarve"]],["Açores",["Região Autónoma dos Açores"]],["Madeira",["Região Autónoma da Madeira"]]];
+const PAIRS=[["Área Metropolitana do Porto","Algarve"],["Cávado","Alentejo Central"],["Alto Minho","Baixo Alentejo"],["Terras de Trás-os-Montes","Algarve"],["Douro","Península de Setúbal"],["Beiras e Serra da Estrela","Grande Lisboa"],["Beira Baixa","Região de Aveiro"],["Lezíria do Tejo","Viseu Dão Lafões"],["Alto Alentejo","Região de Leiria"],["Alentejo Central","Região de Coimbra"],["Baixo Alentejo","Alto Minho"],["Algarve","Terras de Trás-os-Montes"],["Península de Setúbal","Beiras e Serra da Estrela"],["Grande Lisboa","Douro"],["Região de Aveiro","Algarve"],["Região Autónoma da Madeira","Região Autónoma dos Açores"]];
+function fillRegions(sel,def){NUTS3.forEach(g=>{const og=document.createElement("optgroup");og.label=g[0];g[1].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;if(n===def)o.selected=true;og.appendChild(o);});sel.appendChild(og);});}
+fillRegions(document.getElementById("cityA"),"Beiras e Serra da Estrela"); fillRegions(document.getElementById("cityB"),"Grande Lisboa");
+const NS="http://www.w3.org/2000/svg";
+const $=id=>document.getElementById(id);
+
+function initials(name){return name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase()||"•";}
+function pct(a,b){a=+a;b=+b;const avg=(Math.abs(a)+Math.abs(b))/2;if(!avg)return 0;return Math.abs(a-b)/avg*100;}
+function utci(temp){
+  if(temp>=38)return{t:t("uExtreme"),c:"#8b1e1e"};
+  if(temp>=32)return{t:t("uStrong"),c:"#d95f43"};
+  if(temp>=28)return{t:t("uMod"),c:"#ef9b3c"};
+  if(temp>=24)return{t:t("uNone"),c:"#3d9970"};
+  if(temp>=18)return{t:t("uSlight"),c:"#4aa3df"};
+  if(temp>=10)return{t:t("uCool"),c:"#2e6da4"};
+  return{t:t("uCold"),c:"#1b2f4b"};
+}
+function pos(t){return Math.max(0,Math.min(100,(t+5)/50*100));}
+
+const pl=$("pairList");
+PAIRS.forEach((p,i)=>{
+  const li=document.createElement("li");
+  const b=document.createElement("button");
+  b.textContent=(i+1)+"  "+p[0]+" – "+p[1];
+  b.onclick=()=>{ $("cityA").value=p[0]; $("cityB").value=p[1]; $("pairNo").value=i+1; syncMono();
+    [...pl.querySelectorAll("button")].forEach(x=>x.classList.remove("active")); b.classList.add("active"); };
+  li.appendChild(b); pl.appendChild(li);
+});
+function syncMono(){ $("monoA").textContent=initials($("cityA").value||"A"); $("monoB").textContent=initials($("cityB").value||"B");
+  const ca=($("cityA").value||"City A").trim(), cb=($("cityB").value||"City B").trim();
+  $("pickA").firstChild.textContent=ca+" "; $("pickAsub").textContent="A · "+initials(ca);
+  $("pickB").firstChild.textContent=cb+" "; $("pickBsub").textContent="B · "+initials(cb);
+  $("winA").firstChild.textContent=ca+" "; $("winAsub").textContent="A · "+initials(ca);
+  $("winB").firstChild.textContent=cb+" "; $("winBsub").textContent="B · "+initials(cb);
+  $("formA").firstChild.textContent=ca+" "; $("formAsub").textContent="A · "+initials(ca);
+  $("formB").firstChild.textContent=cb+" "; $("formBsub").textContent="B · "+initials(cb);
+}
+["cityA","cityB"].forEach(id=>$(id).addEventListener("input",syncMono)); syncMono();
+$("ipmaBtn").onclick=()=>window.open("https://dataclima.ipma.pt/hm?l=en","_blank","noopener");
+let massPick=null, winPick=null, formPick=null;
+function paintPicks(){ $("pickA").className="pick"+(massPick==="A"?" onA":""); $("pickB").className="pick"+(massPick==="B"?" onB":""); $("pickE").className="pick"+(massPick==="EQ"?" onE":"");
+  $("winA").className="pick"+(winPick==="A"?" onA":""); $("winB").className="pick"+(winPick==="B"?" onB":""); $("winE").className="pick"+(winPick==="EQ"?" onE":"");
+  $("formA").className="pick"+(formPick==="A"?" onA":""); $("formB").className="pick"+(formPick==="B"?" onB":""); $("formE").className="pick"+(formPick==="EQ"?" onE":""); }
+$("pickA").onclick=()=>{massPick="A";paintPicks();};
+$("pickB").onclick=()=>{massPick="B";paintPicks();};
+$("pickE").onclick=()=>{massPick="EQ";paintPicks();};
+$("winA").onclick=()=>{winPick="A";paintPicks();};
+$("winB").onclick=()=>{winPick="B";paintPicks();};
+$("winE").onclick=()=>{winPick="EQ";paintPicks();};
+$("formA").onclick=()=>{formPick="A";paintPicks();};
+$("formB").onclick=()=>{formPick="B";paintPicks();};
+$("formE").onclick=()=>{formPick="EQ";paintPicks();};
+paintPicks();
+document.querySelectorAll(".why input").forEach(c=>c.addEventListener("change",()=>{c.closest(".why").classList.toggle("on",c.checked);}));
+function whyReasons(){return [...document.querySelectorAll(".why input:checked")].map(c=>t({swing:"wSwing",hot:"wHot",nights:"wNights",dry:"wDry"}[c.getAttribute("data-why")]));}
+function composeWhy(cityA,cityB,pick,win,form){
+  const free=$("why")?$("why").value.trim():"", rs=whyReasons();
+  pick=pick||massPick; win=win||winPick; form=form||formPick;
+  let head="";
+  if(pick==="A")head=cityA+(LANG==="pt"?" precisa mais de massa térmica":" needs thermal mass more");
+  else if(pick==="B")head=cityB+(LANG==="pt"?" precisa mais de massa térmica":" needs thermal mass more");
+  else if(pick==="EQ")head=(LANG==="pt"?"Ambas precisam de massa de forma idêntica":"Both need mass equally");
+  let s=head;
+  if(rs.length)s+=" — "+rs.join("; ");
+  const fc=form==="A"?cityA:(form==="B"?cityB:"");
+  if(form==="EQ")s+=(s?". ":"")+(LANG==="pt"?"Ambas pedem forma igualmente compacta":"Both call for equally compact form");
+  else if(fc)s+=(s?". ":"")+t("formAns")+" "+fc+" ("+t("formWhy")+")";
+  const wc=win==="A"?cityA:(win==="B"?cityB:"");
+  if(win==="EQ")s+=(s?". ":"")+(LANG==="pt"?"Ambas aceitam janelas maiores de igual forma":"Both suit larger windows equally");
+  else if(wc)s+=(s?". ":"")+t("winAns")+" "+wc+" ("+t("winWhy")+")";
+  if(free)s+=(s?". ":"")+free;
+  return s;
+}
+
+$("demo").addEventListener("change",e=>{
+  if(e.target.value==="coast"){ $("aMean").value=20.0;$("aJul").value=30.0;$("aRain").value=800;$("aAmp").value=10.0;
+    $("bMean").value=15.0;$("bJul").value=26.0;$("bRain").value=1100;$("bAmp").value=12.0; $("cityA").value="Grande Lisboa";$("cityB").value="Beiras e Serra da Estrela"; }
+  if(e.target.value==="hot"){ $("aMean").value=19.0;$("aJul").value=33.0;$("aRain").value=500;$("aAmp").value=11.0;
+    $("bMean").value=14.0;$("bJul").value=28.0;$("bRain").value=900;$("bAmp").value=13.0; $("cityA").value="Algarve";$("cityB").value="Terras de Trás-os-Montes"; }
+  syncMono();
+});
+
+function el(n,attrs,parent){const e=document.createElementNS(NS,n);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e;}
+function txt(parent,x,y,s,fill,anchor,size,weight){const tt=el("text",{x:x,y:y,"font-size":size||13,fill:fill||"#d6e2e5","text-anchor":anchor||"start","font-weight":weight||600},parent);tt.textContent=s;return tt;}
+
+function drawChart(rows,cityA,cityB){
+  const gB=$("gBars"),gT=$("gTxt"),gL=$("gLeg"); gB.innerHTML="";gT.innerHTML="";gL.innerHTML="";
+  const cx=400,half=190,bh=38,gap=30,top=34;
+  const cols=["#e05a4f","#e8a94b","#5aa9e6","#9b7ede"];
+  el("rect",{x:120,y:308,width:14,height:14,rx:3,fill:"#e05a4f"},gL);
+  txt(gL,140,319,cityA+"  ←","#d6e2e5","start",13,700);
+  el("rect",{x:400,y:308,width:14,height:14,rx:3,fill:"#5aa9e6"},gL);
+  txt(gL,420,319,cityB+"  →","#d6e2e5","start",13,700);
+  rows.forEach((r,i)=>{
+    const y=top+i*(bh+gap);
+    txt(gT,cx-half/2,y-7,cityA,"#e05a4f","middle",12,800);
+    txt(gT,cx+half/2,y-7,cityB,"#5aa9e6","middle",12,800);
+    el("rect",{x:cx-half,y:y,width:half,height:bh,rx:8,fill:"#15262d",stroke:"#2e454f"},gB);
+    el("rect",{x:cx,y:y,width:half,height:bh,rx:8,fill:"#15262d",stroke:"#2e454f"},gB);
+    const wa=r.pa/100*half, wb=r.pb/100*half;
+    if(wa>1) el("rect",{x:cx-wa,y:y,width:wa,height:bh,rx:8,fill:cols[i]},gB);
+    el("rect",{x:cx,y:y,width:Math.max(wb,2),height:bh,rx:8,fill:"#5aa9e6"},gB);
+    el("line",{x1:cx,y1:y-4,x2:cx,y2:y+bh+4,stroke:"#f2f5f4","stroke-width":2},gB);
+    txt(gT,86,y+bh/2+5,r.label,"#f2f5f4","middle",13.5,800);
+    txt(gT,86,y+bh/2+18,r.unit,"#a9bcc2","middle",11,400);
+    txt(gT,cx-wa-8,y+bh/2+5,r.a,"#f0b0a8","end",12.5,700);
+    txt(gT,cx+wb+8,y+bh/2+5,r.b,"#bcd9f5","start",12.5,700);
+    txt(gT,cx,y-7,"Δ "+r.d+"%","#e8a94b","middle",12,800);
+  });
+}
+
+let lastRaw=null,last=null;
+function strategy(jul,amp,rain){
+  let s="<br>• ";
+  if(jul>=30)s+=t("st1");
+  else if(jul>=27)s+=t("st2");
+  else if(jul>=22)s+=t("st3");
+  else s+=t("st4");
+  s+="<br>• "+(amp>=11?t("stSwingHi"):t("stSwingLo"));
+  s+="<br>• "+(rain>=1000?t("stWet"):t("stDry"));
+  return s;
+}
+function renderAll(){
+  if(!lastRaw)return;
+  const r=lastRaw;
+  const dM=pct(r.aM,r.bM),dJ=pct(r.aJ,r.bJ),dR=pct(r.aR,r.bR),dA=pct(r.aA,r.bA);
+  const overall=(dM+dJ+dR+dA)/4;
+  $("kMean").textContent=dM.toFixed(1)+"%";$("kJul").textContent=dJ.toFixed(1)+"%";
+  $("kRain").textContent=dR.toFixed(1)+"%";$("kAmp").textContent=dA.toFixed(1)+"%";
+  const rows=[
+    {label:t("rowMean"),unit:"°C",a:r.aM.toFixed(1),b:r.bM.toFixed(1),pa:r.aM/Math.max(r.aM,r.bM)*100,pb:r.bM/Math.max(r.aM,r.bM)*100,d:dM.toFixed(1)},
+    {label:t("rowJul"),unit:"°C",a:r.aJ.toFixed(1),b:r.bJ.toFixed(1),pa:r.aJ/Math.max(r.aJ,r.bJ)*100,pb:r.bJ/Math.max(r.aJ,r.bJ)*100,d:dJ.toFixed(1)},
+    {label:t("rowRain"),unit:LANG==="pt"?"mm/ano":"mm/yr",a:r.aR.toFixed(0),b:r.bR.toFixed(0),pa:r.aR/Math.max(r.aR,r.bR)*100,pb:r.bR/Math.max(r.aR,r.bR)*100,d:dR.toFixed(1)},
+    {label:t("rowAmp"),unit:LANG==="pt"?"K julho":"K July",a:r.aA.toFixed(1),b:r.bA.toFixed(1),pa:r.aA/Math.max(r.aA,r.bA)*100,pb:r.bA/Math.max(r.aA,r.bA)*100,d:dA.toFixed(1)}
+  ];
+  drawChart(rows,r.cityA,r.cityB);
+  const uA=utci(r.aJ),uB=utci(r.bJ);
+  $("uCityA").textContent=r.cityA;$("uCityB").textContent=r.cityB;
+  $("uPtrA").style.left=pos(r.aJ)+"%";$("uPtrB").style.left=pos(r.bJ)+"%";
+  $("uTagA").textContent=uA.t;$("uTagA").style.background=uA.c;
+  $("uTagB").textContent=uB.t;$("uTagB").style.background=uB.c;
+  $("uValA").textContent=r.aJ.toFixed(1)+t("julMax");$("uValB").textContent=r.bJ.toFixed(1)+t("julMax");
+  const warmer=r.aJ===r.bJ?t("sameHeat"):((r.aJ>r.bJ?r.cityA+" "+t("isWarmer"):r.cityB+" "+t("isWarmer"))+(LANG==="pt"?" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)":" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)"));
+  let massCity,massWhy;
+  if(r.aA===r.bA){ massCity=r.aJ>=r.bJ?r.cityA:r.cityB; massWhy=t("eqSwing"); }
+  else{ massCity=r.aA>r.bA?r.cityA:r.cityB; massWhy=t("bigSwing"); }
+  const pickLabel=r.pick==="A"?r.cityA:(r.pick==="B"?r.cityB:(r.pick==="EQ"?(LANG==="pt"?"Ambas":"Both"):"–"));
+  const okPick=(r.pick==="A"&&massCity===r.cityA)||(r.pick==="B"&&massCity===r.cityB)||(r.pick==="EQ"&&r.aA===r.bA);
+  const expForm=r.aM<r.bM?r.cityA:(r.bM<r.aM?r.cityB:"EQ");
+  const expWin=r.aJ<r.bJ?r.cityA:(r.bJ<r.aJ?r.cityB:"EQ");
+  const okForm=(r.form==="A"&&expForm===r.cityA)||(r.form==="B"&&expForm===r.cityB)||(r.form==="EQ"&&expForm==="EQ");
+  const okWin=(r.win==="A"&&expWin===r.cityA)||(r.win==="B"&&expWin===r.cityB)||(r.win==="EQ"&&expWin==="EQ");
+  const ansScore=(okPick?1:0)+(okForm?1:0)+(okWin?1:0);
+  const mark=ok=>ok?"✓":"✗";
+  const whyTxt=composeWhy(r.cityA,r.cityB,r.pick,r.win,r.form)||"–";
+  $("verdict").innerHTML="<b>"+t("verdictA")+" "+massCity+" "+t("verdictB")+"</b> "+massWhy+". "+t("julyD")+" "+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C ("+dJ.toFixed(1)+"%), "+t("amplD")+" "+Math.abs(r.aA-r.bA).toFixed(1)+" K. "+t("overall")+" <b>"+overall.toFixed(1)+"%</b> — "+warmer+"."
+    +"<br><span class='small'>"+t("yourAns")+": <b>"+pickLabel+"</b> — "+whyTxt+" <b>"+(okPick?t("match"):t("mismatch"))+"</b> · "+t("computed")+": <b>"+massCity+"</b></span>"
+    +"<br><span class='small'>"+t("ansT")+": "+t("mMass")+" <b>"+mark(okPick)+"</b> · "+t("mForm")+" <b>"+mark(okForm)+"</b> · "+t("mWin")+" <b>"+mark(okWin)+"</b> → <b>"+ansScore+"/3</b></span>";
+  $("advice").innerHTML="<div><b>"+r.cityA+" — "+uA.t+"</b>"+strategy(r.aJ,r.aA,r.aR)+"</div><div><b>"+r.cityB+" — "+uB.t+"</b>"+strategy(r.bJ,r.bA,r.bR)+"</div>";
+  $("details").textContent=r.s1+" × "+r.s2+" · "+t("pairW")+" "+(r.pair||"–")+" · "+r.cityA+" vs "+r.cityB+" · "+r.period;
+  $("result").classList.add("show");
+  $("submitBtn").style.display="block";
+  last={s1full:r.s1,s2:r.s2,cityA:r.cityA,cityB:r.cityB,aM:r.aM,aJ:r.aJ,aR:r.aR,aA:r.aA,bM:r.bM,bJ:r.bJ,bR:r.bR,bA:r.bA,
+    dM:dM.toFixed(1),dJ:dJ.toFixed(1),dR:dR.toFixed(1),dA:dA.toFixed(1),overall:overall.toFixed(1),
+    uA:uA.t,uB:uB.t,mass:massCity,pick:r.pick,win:r.win,form:r.form,ans:ansScore,reasons:r.reasons,why:whyTxt,pair:r.pair,period:r.period,time:new Date().toLocaleString(),lang:LANG};
+}
+$("compareBtn").onclick=()=>{
+  const s1=($("s1f").value+" "+$("s1l").value).trim(), s2=($("s2f").value+" "+$("s2l").value).trim();
+  const cityA=$("cityA").value.trim()||"City A", cityB=$("cityB").value.trim()||"City B";
+  const aM=+$("aMean").value,aJ=+$("aJul").value,aR=+$("aRain").value,aA=+$("aAmp").value;
+  const bM=+$("bMean").value,bJ=+$("bJul").value,bR=+$("bRain").value,bA=+$("bAmp").value;
+  if($("s1f").value.trim()===""||$("s1l").value.trim()===""||$("s2f").value.trim()===""||$("s2l").value.trim()===""){alert(t("alertNames"));return;}
+  if([aM,aJ,aR,aA,bM,bJ,bR,bA].some(v=>isNaN(v))){alert(t("alertNums"));return;}
+  if(!massPick){alert(t("needPick"));return;}
+  if(!formPick){alert(t("needForm"));return;}
+  if(!winPick){alert(t("needWin"));return;}
+  syncMono();
+  const reasons=[...document.querySelectorAll(".why input:checked")].map(c=>c.getAttribute("data-why"));
+  lastRaw={s1:s1,s2:s2,cityA:cityA,cityB:cityB,aM:aM,aJ:aJ,aR:aR,aA:aA,bM:bM,bJ:bJ,bR:bR,bA:bA,pair:$("pairNo").value,period:$("period").value,pick:massPick,win:winPick,form:formPick,reasons:reasons};
+  renderAll();
+};
+
+function loadBoard(){try{return JSON.parse(localStorage.getItem("ipma_board")||"[]");}catch(e){return[];}}
+function saveBoard(b){localStorage.setItem("ipma_board",JSON.stringify(b));}
+function autoScore(r){
+  let s=0,notes=[];
+  const okNum=(v,lo,hi)=>isFinite(v)&&v>=lo&&v<=hi;
+  const dataOK=[okNum(+r.aM,-5,30),okNum(+r.bM,-5,30),okNum(+r.aJ,10,45),okNum(+r.bJ,10,45),okNum(+r.aR,0,3000),okNum(+r.bR,0,3000),okNum(+r.aA,2,22),okNum(+r.bA,2,22)].filter(Boolean).length;
+  const dPts=Math.round(dataOK/8*4); s+=dPts; notes.push("data "+dPts+"/4");
+  const diffsOK=["dM","dJ","dR","dA"].every(k=>isFinite(parseFloat(r[k]))); s+=diffsOK?4:0; notes.push("diffs "+(diffsOK?"4":"0")+"/4");
+  let c=0;
+  if(r.pick==="A"||r.pick==="B"||r.pick==="EQ")c+=2;
+  if(r.form==="A"||r.form==="B"||r.form==="EQ")c+=2;
+  if(r.win==="A"||r.win==="B"||r.win==="EQ")c+=2;
+  s+=Math.min(6,c); notes.push("conclusion "+Math.min(6,c)+"/6");
+  let n=0; if(r.pair&&+r.pair>=1&&+r.pair<=16)n+=2; if(r.period&&r.period.length>3)n+=2;
+  if(r.s1full&&r.s1full.split(" ").length>=2&&r.s2&&r.s2.split(" ").length>=2)n+=2;
+  s+=n; notes.push("cite+names "+n+"/6");
+  return {score:Math.min(20,s),notes:notes.join(" · ")};
+}
+function gradeColor(g){g=+g;if(!isFinite(g))return"#5a6c73";if(g>=16)return"#2e9e62";if(g>=12)return"#b98a1f";if(g>=10)return"#b06a1f";return"#b03a2e";}
+function renderBoard(){
+  const b=loadBoard(),box=$("board");box.innerHTML="";
+  if($("csvBtn"))$("csvBtn").textContent=t("csvT");
+  if(!b.length){$("stN").textContent="0";$("stG").textContent="–";$("stA").textContent="–";box.innerHTML="<p class='small'>"+t("empty")+"</p>";return;}
+  let gs=0,gn=0,as=0;
+  b.forEach(r=>{const a=autoScore(r).score;as+=a;if(isFinite(+r.grade)){gs+=+r.grade;gn++;}});
+  $("stN").textContent=b.length;
+  $("stA").textContent=(as/b.length).toFixed(1);
+  $("stG").textContent=gn?(gs/gn).toFixed(1)+"  ("+gn+")":"–";
+  b.map((r,idx)=>({r:r,idx:idx})).reverse().forEach(o=>{
+    const r=o.r,idx=o.idx;
+    const a=autoScore(r);
+    const d=document.createElement("div");d.className="sub";
+    const pw=r.lang==="pt"?"par":"pair", mw=r.lang==="pt"?"massa":"mass", nn=r.lang==="pt"?"sem nota":"no note";
+    const g=isFinite(+r.grade)?(+r.grade).toFixed(1):null;
+    d.innerHTML="<b>"+r.s1full+" × "+r.s2+"</b> · "+pw+" "+(r.pair||"–")+" · <b>"+r.cityA+" vs "+r.cityB+"</b> — Δ "+r.overall+"% · "+mw+": <b>"+r.mass+"</b> · "+(r.lang==="pt"?"respostas":"answers")+": <b>"+(r.ans!==undefined?r.ans+"/3":"–")+"</b>"
+      +"<span class='pill' style='background:"+gradeColor(g!==null?g:a.score)+";color:#fff'>"+(g!==null?g+" /20":"auto "+a.score+" /20")+"</span>"
+      +"<br><small>"+r.time+" · "+r.period+" · July "+r.aJ+"/"+r.bJ+" °C · ampl "+r.aA+"/"+r.bA+" K · "+(r.why||nn)+"</small>"
+      +"<div class='auto'>"+t("autoL")+" "+a.score+"/20 — "+a.notes+"</div>"
+      +(r.fb?"<div class='auto'><b>"+t("teachL")+":</b> "+r.fb+"</div>":"")
+      +"<div class='grade-row'><input type='number' min='0' max='20' step='0.5' placeholder='"+t("gradePh")+"' value='"+(g!==null?g:"")+"' data-g='"+idx+"'>"
+      +"<input type='text' style='flex:1;min-width:140px' placeholder='"+t("fbPh")+"' value='"+(r.fb||"").replace(/"/g,"&quot;")+"' data-f='"+idx+"'>"
+      +"<button data-s='"+idx+"'>"+t("gradeBtn")+"</button>"
+      +(g!==null?"<button class='ghost2' data-d='"+idx+"'>"+t("gradeDel")+"</button>":"")+"</div>";
+    box.appendChild(d);
+  });
+  box.querySelectorAll("[data-s]").forEach(btn=>btn.onclick=()=>{
+    const i=+btn.getAttribute("data-s");
+    const g=box.querySelector("[data-g='"+i+"']").value, f=box.querySelector("[data-f='"+i+"']").value;
+    const bb=loadBoard(); if(!bb[i])return;
+    if(g===""||!isFinite(+g)||+g<0||+g>20){alert("0–20");return;}
+    bb[i].grade=+g; bb[i].fb=f.trim(); saveBoard(bb); renderBoard();
+  });
+  box.querySelectorAll("[data-d]").forEach(btn=>btn.onclick=()=>{
+    const i=+btn.getAttribute("data-d"); const bb=loadBoard(); if(!bb[i])return;
+    delete bb[i].grade; delete bb[i].fb; saveBoard(bb); renderBoard();
+  });
+}
+function applyLang(l){
+  LANG=l; document.documentElement.lang=l;
+  $("btnEN").classList.toggle("active",l==="en"); $("btnPT").classList.toggle("active",l==="pt");
+  document.querySelectorAll("[data-i18n]").forEach(e=>{e.textContent=t(e.getAttribute("data-i18n"));});
+  document.querySelectorAll("[data-i18n-ph]").forEach(e=>{e.placeholder=t(e.getAttribute("data-i18n-ph"));});
+  document.title=l==="pt"?"Comparem Dois Lugares — Exercício IPMA":"Compare Two Places — IPMA Classroom Exercise";
+  renderBoard(); renderAll();
+}
+$("btnEN").onclick=()=>applyLang("en");
+$("btnPT").onclick=()=>applyLang("pt");
+renderBoard();
+$("clearBtn").onclick=()=>{if(confirm("OK?")){localStorage.removeItem("ipma_board");renderBoard();}};
+$("csvBtn").onclick=()=>{
+  const b=loadBoard(); if(!b.length)return;
+  const head=["time","lang","pair","students","cityA","cityB","aMean","aJul","aRain","aAmp","bMean","bJul","bRain","bAmp","dMean","dJul","dRain","dAmp","overall","utciA","utciB","mass_computed","mass_pick","form_pick","win_pick","ans_score","reasons","why","auto","grade","feedback"];
+  const q=v=>'"'+String(v===undefined||v===null?"":v).replace(/"/g,'""')+'"';
+  const lines=[head.join(";")].concat(b.map(r=>{const a=autoScore(r).score;
+    return [r.time,r.lang,r.pair,r.s1full+" x "+r.s2,r.cityA,r.cityB,r.aM,r.aJ,r.aR,r.aA,r.bM,r.bJ,r.bR,r.bA,r.dM,r.dJ,r.dR,r.dA,r.overall,r.uA,r.uB,r.mass,(r.pick||""),(r.form||""),(r.win||""),(r.ans===undefined?"":r.ans),((r.reasons||[]).join("|")),r.why,a,(r.grade===undefined?"":r.grade),(r.fb||"")].map(q).join(";");}));
+  const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+  const u=URL.createObjectURL(blob); const link=document.createElement("a");
+  link.href=u; link.download="ipma_grades.csv"; link.click(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+};
+$("submitBtn").onclick=()=>{
+  if(!last||!lastRaw){alert(t("alertFirst"));return;}
+  if(!massPick){alert(t("needPick"));return;}
+  if(!formPick){alert(t("needForm"));return;}
+  if(!winPick){alert(t("needWin"));return;}
+  lastRaw.reasons=[...document.querySelectorAll(".why input:checked")].map(c=>c.getAttribute("data-why"));
+  lastRaw.pick=massPick; lastRaw.win=winPick; lastRaw.form=formPick; renderAll();
+  last.lang=LANG;
+  const b=loadBoard();b.push(last);saveBoard(b);renderBoard();
+  const pt=LANG==="pt";
+  const subj="IPMA "+(pt?"par":"pair")+" "+(last.pair||"-")+" "+last.cityA+"–"+last.cityB+": "+last.s1full+" × "+last.s2;
+  const body=(pt?"Par ":"Pair ")+(last.pair||"-")+" · "+last.period+"\n"+(pt?"Estudantes: ":"Students: ")+last.s1full+" × "+last.s2+"\n"+last.cityA+": air avg "+last.aM+", July air max "+last.aJ+", total precip "+last.aR+", amplitude "+last.aA+" ("+last.uA+")\n"+last.cityB+": air avg "+last.bM+", July air max "+last.bJ+", total precip "+last.bR+", amplitude "+last.bA+" ("+last.uB+")\nΔ air avg "+last.dM+"% · July air max "+last.dJ+"% · total precip "+last.dR+"% · amplitude "+last.dA+"% · overall "+last.overall+"%\n"+(pt?"Massa térmica (alunos): ":"Thermal mass (students): ")+(last.pick||"-")+"\n"+(pt?"Forma compacta (alunos): ":"Compact form (students): ")+(last.form||"-")+"\n"+(pt?"Janelas maiores (alunos): ":"Larger windows (students): ")+(last.win||"-")+"\n"+(pt?"Massa térmica (calculada): ":"Thermal mass (computed): ")+last.mass+"\n"+(pt?"Respostas: ":"Answers: ")+(last.ans!==undefined?last.ans+"/3":"-")+"\n"+(pt?"Porquê: ":"Why: ")+(last.why||"-");
+  window.open("mailto:ncorticos@campus.ul.pt?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body),"_blank");
+  $("board").scrollIntoView({behavior:"smooth"});
+};
+applyLang("en");
+</script>
+</body>
+</html>
