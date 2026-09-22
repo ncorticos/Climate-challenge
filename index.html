@@ -233,10 +233,38 @@ Object.assign(I18N.en,{pickL:"1 · Tick the region that needs mass more",whyL:"2
 Object.assign(I18N.pt,{pickL:"1 · Assinalem a cidade que precisa mais de massa",whyL:"2 · Assinalem porquê (tudo o que se aplicar)",noteL:"3 · Nota extra (opcional)",pickE:"Ambas / igual",pickEsub:"mesma necessidade",wSwing:"Maior amplitude diurna — a massa amortece o pico",wHot:"Julho mais quente — mais calor para armazenar",wNights:"Noites frescas — a descarga noturna funciona",wDry:"Ano mais seco — massa + pátio funcionam bem",needPick:"Assinalem que cidade precisa de massa térmica (A, B ou Ambas).",yourAns:"A vossa resposta",computed:"Calculado",match:"✓ coincide",mismatch:"✗ difere — discutam porquê",winL:"3 · Qual cidade pode ter janelas maiores?",needWin:"Assinalem qual cidade pode ter janelas maiores (A, B ou Ambas).",winAns:"Janelas maiores para",winWhy:"julho mais fresco, menor risco de sobreaquecimento",whyL:"2 · Qual cidade pede uma forma mais compacta?",needForm:"Assinalem qual cidade pede uma forma mais compacta (A, B ou Ambas).",formAns:"Forma compacta para",formWhy:"ano mais frio, menos perdas térmicas",stu1:"Estudante 1",stu2:"Estudante 2",mMass:"Massa",mForm:"Forma",mWin:"Janelas",ansT:"Respostas"});
 Object.assign(I18N.pt,{alertNums:"Preencham os 4 números IPMA de ambas as regiões.",imgNote:"Nota: este modelo não lê uploads image.png, por isso as regiões aparecem como monogramas (iniciais + cor), não fotos.",pickL:"1 · Assinalem a região que precisa mais de massa",needPick:"Assinalem que região precisa de massa térmica (A, B ou Ambas).",winL:"3 · Qual região pode ter janelas maiores?",needWin:"Assinalem qual região pode ter janelas maiores (A, B ou Ambas).",whyL:"2 · Qual região pede uma forma mais compacta?",needForm:"Assinalem qual região pede uma forma mais compacta (A, B ou Ambas).",uExtreme:"Stress de calor extremo",uStrong:"Stress de calor forte",uMod:"Stress de calor moderado",uSlight:"Stress de frio ligeiro",uCool:"Stress de frio",uCold:"Stress de frio intenso",julyD:"julho Δ",amplD:"amplitude Δ",sameHeat:"Mesmo calor em julho"});
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
-const NUTS3=[["Norte",["Alto Minho","Cávado","Ave","Área Metropolitana do Porto","Alto Tâmega e Barroso","Tâmega e Sousa","Douro","Terras de Trás-os-Montes"]],["Centro",["Região de Aveiro","Região de Coimbra","Região de Leiria","Viseu Dão Lafões","Beira Baixa","Beiras e Serra da Estrela"]],["Oeste e Vale do Tejo",["Oeste","Médio Tejo","Lezíria do Tejo"]],["Grande Lisboa",["Grande Lisboa"]],["Península de Setúbal",["Península de Setúbal"]],["Alentejo",["Alentejo Litoral","Baixo Alentejo","Alto Alentejo","Alentejo Central"]],["Algarve",["Algarve"]],["Açores",["Região Autónoma dos Açores"]],["Madeira",["Região Autónoma da Madeira"]]];
-const PAIRS=[["Área Metropolitana do Porto","Algarve"],["Cávado","Alentejo Central"],["Alto Minho","Baixo Alentejo"],["Terras de Trás-os-Montes","Algarve"],["Douro","Península de Setúbal"],["Beiras e Serra da Estrela","Grande Lisboa"],["Beira Baixa","Região de Aveiro"],["Lezíria do Tejo","Viseu Dão Lafões"],["Alto Alentejo","Região de Leiria"],["Alentejo Central","Região de Coimbra"],["Baixo Alentejo","Alto Minho"],["Algarve","Terras de Trás-os-Montes"],["Península de Setúbal","Beiras e Serra da Estrela"],["Grande Lisboa","Douro"],["Região de Aveiro","Algarve"],["Região Autónoma da Madeira","Região Autónoma dos Açores"]];
-function fillRegions(sel,def){NUTS3.forEach(g=>{const og=document.createElement("optgroup");og.label=g[0];g[1].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;if(n===def)o.selected=true;og.appendChild(o);});sel.appendChild(og);});}
-fillRegions(document.getElementById("cityA"),"Beiras e Serra da Estrela"); fillRegions(document.getElementById("cityB"),"Grande Lisboa");
+Object.assign(I18N.en,{bookRef:"Book: Gonçalves & Graça (2004) §§1.3–1.5, 3–4. Continental Portugal (RCCTE I/V) only.",bothMass:"similar swing and July heat — equal need; both take strong inertia + night ventilation",stSolar:"Restrict solar gains with",stSouth:"glazing South; keep East/West/North small",stWest:"West is worst in summer (afternoon heat + sun)",stIns:"Restrict conduction — insulate envelope",stInsBase:"insulation per zone",stShBase:"shading per zone",stRoof:"roof is critical; light colours; double glazing",stInertia:"Strong inertia: heavy walls with exterior insulation (stores winter sun, damps summer peak)",stVent:"Promote cross nocturnal ventilation + buried tubes (1–3 m)",stVentHi:"especially effective here — flush stored day heat at night",stEvap:"In dry/continental heat (V3): add evaporative cooling — water mirrors/fountains at very low air speed, extract hot air by natural convection",st1:"Deep shading + ventilated mass; night flush essential.",st2:"Shading + exposed mass; cross-ventilate afternoons.",st3:"Light shading; mass to smooth the day.",st4:"Insulate + retain winter gains; mass for stability.",stSwingHi:"Swing ≥10 K — mass pays off most here (damps peak, night flush).",stSwingLo:"Swing <10 K — mass still helps (all zones take strong inertia).",stWet:"Wet year — ventilate envelope, protect mass from damp.",stDry:"Dry year — courtyard + evaporative cooling possible.",bigSwing:"larger swing stores day heat in mass and flushes it at night (heavy walls, exterior insulation)",eqSwing:"equal swing — hotter July stores more day heat, so more mass + night flush"});
+Object.assign(I18N.pt,{bookRef:"Livro: Gonçalves & Graça (2004) §§1.3–1.5, 3–4. Só Portugal continental (RCCTE I/V).",bothMass:"amplitude e julho semelhantes — necessidade igual; ambas com inércia forte + ventilação noturna",stSolar:"Restringir ganhos solares com",stSouth:"envidraçados a Sul; manter Nascente/Poente/Norte pequenos",stWest:"Poente é a pior fachada no Verão (calor da tarde + sol)",stIns:"Restringir condução — isolar a envolvente",stInsBase:"isolamento por zona",stShBase:"sombreamento por zona",stRoof:"cobertura é crítica; cores claras; vidros duplos",stInertia:"Inércia forte: paredes pesadas com isolamento pelo exterior (acumula sol de Inverno, amortece pico de Verão)",stVent:"Promover ventilação transversal noturna + tubos enterrados (1–3 m)",stVentHi:"muito eficaz aqui — descarregar à noite o calor acumulado",stEvap:"Em calor seco/continental (V3): juntar arrefecimento evaporativo — espelhos de água/fontes a velocidade muito baixa, extrair ar quente por convecção natural",st1:"Sombreamento profundo + massa ventilada; descarga noturna essencial.",st2:"Sombreamento + massa exposta; ventilar à tarde.",st3:"Sombreamento ligeiro; massa para suavizar o dia.",st4:"Isolar + reter ganhos de Inverno; massa para estabilidade.",stSwingHi:"Amplitude ≥10 K — a massa rende mais aqui (amortece pico, descarga noturna).",stSwingLo:"Amplitude <10 K — a massa ajuda na mesma (todas as zonas com inércia forte).",stWet:"Ano húmido — ventilar a envolvente, proteger a massa da humidade.",stDry:"Ano seco — pátio + arrefecimento evaporativo possíveis.",bigSwing:"maior amplitude acumula calor do dia na massa e liberta-o à noite (paredes pesadas, isolamento exterior)",eqSwing:"amplitude igual — o julho mais quente acumula mais calor, logo mais massa + descarga noturna"});
+Object.assign(I18N.en,{brief:"Each pair gets a different pair of Portuguese concelhos (continental Portugal only, RCCTE I/V zones per Gonçalves & Graça 2004) — find your number. Open IPMA's Fichas Climatológicas 1991–2020 for both and enter: annual mean, July maximum, annual precipitation, diurnal amplitude.",demo1:"Lisboa VS Guarda (EXAMPLE numbers — overwrite with IPMA)",demo2:"Évora VS Bragança (EXAMPLE numbers — overwrite with IPMA)",utciT:"July-heat indicator — July max on −5…+45 °C (simplified proxy, not full UTCI)",imgNote:"Continental Portugal only (book scope). Zones shown as I/V per Gonçalves & Graça. Demo values are EXAMPLES — replace with your IPMA numbers before submitting.",pairBrief:"Click your number to autofill the two concelhos (with RCCTE zone).",slogan:"Two PDFs. Four numbers. One conclusion.",slogan2:"Five minutes, in pairs. Cite station + period. Book: Gonçalves & Graça (2004)."});
+Object.assign(I18N.pt,{brief:"Cada par recebe um par diferente de concelhos portugueses (só Portugal continental, zonas RCCTE I/V segundo Gonçalves & Graça 2004) — encontrem o vosso número. Abram as Fichas Climatológicas IPMA 1991–2020 e introduzam: média anual, máxima de julho, precipitação anual, amplitude diurna.",demo1:"Lisboa VS Guarda (números de EXEMPLO — substituir pelos do IPMA)",demo2:"Évora VS Bragança (números de EXEMPLO — substituir pelos do IPMA)",utciT:"Indicador de calor de julho — máx. julho em −5…+45 °C (proxy simplificado, não é UTCI completo)",imgNote:"Só Portugal continental (âmbito do livro). Zonas I/V segundo Gonçalves & Graça. Valores demo são EXEMPLOS — substituir pelos números do IPMA antes de submeter.",pairBrief:"Cliquem no número para preencher os dois concelhos (com zona RCCTE).",slogan:"Dois PDFs. Quatro números. Uma conclusão.",slogan2:"Cinco minutos, em pares. Citar estação + período. Livro: Gonçalves & Graça (2004)."});
+// Source of truth: Gonçalves & Graça, Conceitos Bioclimáticos para os Edifícios em Portugal (2004), RCCTE zones. Continental Portugal only.
+const ZONE_INFO={
+"I1-V1":{ins:{en:"adequate insulation",pt:"isolamento adequado"},sh:{en:"effective shading",pt:"sombreamento eficaz"}},
+"I1-V2":{ins:{en:"adequate insulation",pt:"isolamento adequado"},sh:{en:"very effective shading",pt:"sombreamento muito eficaz"}},
+"I1-V3":{ins:{en:"high insulation",pt:"isolamento elevado"},sh:{en:"extremely effective shading",pt:"sombreamento muitíssimo eficaz"}},
+"I2-V1":{ins:{en:"high insulation",pt:"isolamento elevado"},sh:{en:"effective shading",pt:"sombreamento eficaz"}},
+"I2-V2":{ins:{en:"high insulation",pt:"isolamento elevado"},sh:{en:"very effective shading",pt:"sombreamento muito eficaz"}},
+"I2-V3":{ins:{en:"very high insulation",pt:"isolamento muito elevado"},sh:{en:"extremely effective shading",pt:"sombreamento muitíssimo eficaz"}},
+"I3-V1":{ins:{en:"very, very high insulation",pt:"isolamento muitíssimo elevado"},sh:{en:"effective shading",pt:"sombreamento eficaz"}},
+"I3-V2":{ins:{en:"very, very high insulation",pt:"isolamento muitíssimo elevado"},sh:{en:"very effective shading",pt:"sombreamento muito eficaz"}},
+"I3-V3":{ins:{en:"very, very high insulation",pt:"isolamento muitíssimo elevado"},sh:{en:"extremely effective shading",pt:"sombreamento muitíssimo eficaz"}}};
+const PLACES=[
+["I1-V1",["Sintra","Peniche","Aveiro","Lagos"]],
+["I1-V2",["Lisboa","Coimbra","Faro","Olhão"]],
+["I1-V3",["Évora","Beja","Santarém","Elvas"]],
+["I2-V1",["Porto","Leiria","Viana do Castelo"]],
+["I2-V2",["Viseu","Braga","Guimarães"]],
+["I2-V3",["Abrantes (Tancos)","Castelo Branco","Tomar","Portalegre"]],
+["I3-V1",["Guarda","Montalegre","Manteigas"]],
+["I3-V2",["Bragança","Vila Real","Chaves"]],
+["I3-V3",["Mirandela","Tarouca","Lamego"]]];
+function zoneOf(name){for(const g of PLACES){if(g[1].includes(name))return g[0];}return "—";}
+function baseOf(name){return (name||"").replace(/\s*\(I\d-V\d\)\s*/,"").trim();}
+const PAIRS=[["Sintra","Évora"],["Lisboa","Guarda"],["Porto","Bragança"],["Coimbra","Viseu"],["Faro","Beja"],["Aveiro","Portalegre"],["Évora","Montalegre"],["Lisboa","Mirandela"],["Viseu","Guarda"],["Santarém","Porto"],["Lagos","Braga"],["Castelo Branco","Manteigas"],["Olhão","Vila Real"],["Peniche","Tomar"],["Leiria","Elvas"],["Chaves","Tarouca"]];
+function fillRegions(sel,def){PLACES.forEach(g=>{const og=document.createElement("optgroup");og.label=g[0]+" — "+ZONE_INFO[g[0]].ins.en+" / "+ZONE_INFO[g[0]].sh.en;g[1].forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n+" ("+g[0]+")";if(n===def)o.selected=true;og.appendChild(o);});sel.appendChild(og);});}
+fillRegions(document.getElementById("cityA"),"Guarda"); fillRegions(document.getElementById("cityB"),"Lisboa");
+// Decision tolerances: values closer than this count as equal → "Both". Prevents forced choices on similar climates.
+const TOL_MEAN=0.5, TOL_JUL=0.5, TOL_AMP=0.5;
 const NS="http://www.w3.org/2000/svg";
 const $=id=>document.getElementById(id);
 
@@ -309,10 +337,10 @@ function composeWhy(cityA,cityB,pick,win,form){
 }
 
 $("demo").addEventListener("change",e=>{
-  if(e.target.value==="coast"){ $("aMean").value=20.0;$("aJul").value=30.0;$("aRain").value=800;$("aAmp").value=10.0;
-    $("bMean").value=15.0;$("bJul").value=26.0;$("bRain").value=1100;$("bAmp").value=12.0; $("cityA").value="Grande Lisboa";$("cityB").value="Beiras e Serra da Estrela"; }
-  if(e.target.value==="hot"){ $("aMean").value=19.0;$("aJul").value=33.0;$("aRain").value=500;$("aAmp").value=11.0;
-    $("bMean").value=14.0;$("bJul").value=28.0;$("bRain").value=900;$("bAmp").value=13.0; $("cityA").value="Algarve";$("cityB").value="Terras de Trás-os-Montes"; }
+  if(e.target.value==="coast"){ $("aMean").value=17.5;$("aJul").value=28.5;$("aRain").value=700;$("aAmp").value=9.0;
+    $("bMean").value=11.5;$("bJul").value=27.0;$("bRain").value=1100;$("bAmp").value=12.5; $("cityA").value="Lisboa";$("cityB").value="Guarda"; }
+  if(e.target.value==="hot"){ $("aMean").value=18.0;$("aJul").value=33.5;$("aRain").value=450;$("aAmp").value=13.0;
+    $("bMean").value=12.0;$("bJul").value=29.0;$("bRain").value=850;$("bAmp").value=14.0; $("cityA").value="Évora";$("cityB").value="Bragança"; }
   syncMono();
 });
 
@@ -322,7 +350,6 @@ function txt(parent,x,y,s,fill,anchor,size,weight){const tt=el("text",{x:x,y:y,"
 function drawChart(rows,cityA,cityB){
   const gB=$("gBars"),gT=$("gTxt"),gL=$("gLeg"); gB.innerHTML="";gT.innerHTML="";gL.innerHTML="";
   const cx=400,half=190,bh=38,gap=30,top=34;
-  const cols=["#e05a4f","#e8a94b","#5aa9e6","#9b7ede"];
   el("rect",{x:120,y:308,width:14,height:14,rx:3,fill:"#e05a4f"},gL);
   txt(gL,140,319,cityA+"  ←","#d6e2e5","start",13,700);
   el("rect",{x:400,y:308,width:14,height:14,rx:3,fill:"#5aa9e6"},gL);
@@ -334,7 +361,7 @@ function drawChart(rows,cityA,cityB){
     el("rect",{x:cx-half,y:y,width:half,height:bh,rx:8,fill:"#15262d",stroke:"#2e454f"},gB);
     el("rect",{x:cx,y:y,width:half,height:bh,rx:8,fill:"#15262d",stroke:"#2e454f"},gB);
     const wa=r.pa/100*half, wb=r.pb/100*half;
-    if(wa>1) el("rect",{x:cx-wa,y:y,width:wa,height:bh,rx:8,fill:cols[i]},gB);
+    if(wa>1) el("rect",{x:cx-wa,y:y,width:wa,height:bh,rx:8,fill:"#e05a4f"},gB);
     el("rect",{x:cx,y:y,width:Math.max(wb,2),height:bh,rx:8,fill:"#5aa9e6"},gB);
     el("line",{x1:cx,y1:y-4,x2:cx,y2:y+bh+4,stroke:"#f2f5f4","stroke-width":2},gB);
     txt(gT,86,y+bh/2+5,r.label,"#f2f5f4","middle",13.5,800);
@@ -346,13 +373,24 @@ function drawChart(rows,cityA,cityB){
 }
 
 let lastRaw=null,last=null;
-function strategy(jul,amp,rain){
-  let s="<br>• ";
-  if(jul>=30)s+=t("st1");
-  else if(jul>=27)s+=t("st2");
-  else if(jul>=22)s+=t("st3");
-  else s+=t("st4");
-  s+="<br>• "+(amp>=11?t("stSwingHi"):t("stSwingLo"));
+function strategyFor(city,jul,amp,rain){
+  const z=zoneOf(city), zi=ZONE_INFO[z];
+  const ins=zi?zi.ins[LANG]||zi.ins.en:t("stInsBase");
+  const sh=zi?zi.sh[LANG]||zi.sh.en:t("stShBase");
+  let s="<br>• "+t("stSolar")+" "+sh+" ("+t("stSouth")+"). "+t("stWest")+".";
+  s+="<br>• "+t("stIns")+": "+ins+". "+t("stRoof")+".";
+  s+="<br>• "+t("stInertia")+".";
+  let vent=t("stVent");
+  const vPart=z.split("-")[1];
+  const dry=rain<800;
+  if(z==="I1-V3"||z==="I2-V3"||z==="I3-V2"||z==="I3-V3"||(jul>=30&&dry)||vPart==="V3"){s+="<br>• "+t("stEvap");}
+  else if(amp>=10||jul>=28){s+="<br>• "+vent+" "+t("stVentHi");}
+  else{s+="<br>• "+vent+".";}
+  if(jul>=30)s="<br>• "+t("st1")+" "+s;
+  else if(jul>=27)s="<br>• "+t("st2")+" "+s;
+  else if(jul>=22)s="<br>• "+t("st3")+" "+s;
+  else s="<br>• "+t("st4")+" "+s;
+  s+="<br>• "+(amp>=10?t("stSwingHi"):t("stSwingLo"));
   s+="<br>• "+(rain>=1000?t("stWet"):t("stDry"));
   return s;
 }
@@ -376,29 +414,38 @@ function renderAll(){
   $("uTagA").textContent=uA.t;$("uTagA").style.background=uA.c;
   $("uTagB").textContent=uB.t;$("uTagB").style.background=uB.c;
   $("uValA").textContent=r.aJ.toFixed(1)+t("julMax");$("uValB").textContent=r.bJ.toFixed(1)+t("julMax");
-  const warmer=r.aJ===r.bJ?t("sameHeat"):((r.aJ>r.bJ?r.cityA+" "+t("isWarmer"):r.cityB+" "+t("isWarmer"))+(LANG==="pt"?" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)":" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)"));
-  let massCity,massWhy;
-  if(r.aA===r.bA){ massCity=r.aJ>=r.bJ?r.cityA:r.cityB; massWhy=t("eqSwing"); }
-  else{ massCity=r.aA>r.bA?r.cityA:r.cityB; massWhy=t("bigSwing"); }
+  const warmer=Math.abs(r.aJ-r.bJ)<=TOL_JUL?t("sameHeat"):((r.aJ>r.bJ?r.cityA+" "+t("isWarmer"):r.cityB+" "+t("isWarmer"))+(LANG==="pt"?" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)":" ("+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C)"));
+  let massCity,massWhy,massKey;
+  const dAmp=Math.abs(r.aA-r.bA), dJulM=Math.abs(r.aJ-r.bJ);
+  if(dAmp>TOL_AMP){ massCity=r.aA>r.bA?r.cityA:r.cityB; massWhy=t("bigSwing"); massKey=r.aA>r.bA?"A":"B"; }
+  else if(dJulM>TOL_JUL){ massCity=r.aJ>r.bJ?r.cityA:r.cityB; massWhy=t("eqSwing"); massKey=r.aJ>r.bJ?"A":"B"; }
+  else{ massCity=(LANG==="pt"?"Ambas":"Both"); massWhy=t("bothMass"); massKey="EQ"; }
   const pickLabel=r.pick==="A"?r.cityA:(r.pick==="B"?r.cityB:(r.pick==="EQ"?(LANG==="pt"?"Ambas":"Both"):"–"));
-  const okPick=(r.pick==="A"&&massCity===r.cityA)||(r.pick==="B"&&massCity===r.cityB)||(r.pick==="EQ"&&r.aA===r.bA);
-  const expForm=r.aM<r.bM?r.cityA:(r.bM<r.aM?r.cityB:"EQ");
-  const expWin=r.aJ<r.bJ?r.cityA:(r.bJ<r.aJ?r.cityB:"EQ");
-  const okForm=(r.form==="A"&&expForm===r.cityA)||(r.form==="B"&&expForm===r.cityB)||(r.form==="EQ"&&expForm==="EQ");
-  const okWin=(r.win==="A"&&expWin===r.cityA)||(r.win==="B"&&expWin===r.cityB)||(r.win==="EQ"&&expWin==="EQ");
+  const okPick=(r.pick===massKey)||(massKey==="EQ"&&r.pick==="EQ");
+  const dMean=Math.abs(r.aM-r.bM);
+  const expFormKey=dMean<=TOL_MEAN?"EQ":(r.aM<r.bM?"A":"B");
+  const expForm=expFormKey==="EQ"?"EQ":(expFormKey==="A"?r.cityA:r.cityB);
+  const dJulW=Math.abs(r.aJ-r.bJ);
+  const expWinKey=dJulW<=TOL_JUL?"EQ":(r.aJ<r.bJ?"A":"B");
+  const expWin=expWinKey==="EQ"?"EQ":(expWinKey==="A"?r.cityA:r.cityB);
+  const okForm=(r.form===expFormKey);
+  const okWin=(r.win===expWinKey);
   const ansScore=(okPick?1:0)+(okForm?1:0)+(okWin?1:0);
   const mark=ok=>ok?"✓":"✗";
   const whyTxt=composeWhy(r.cityA,r.cityB,r.pick,r.win,r.form)||"–";
-  $("verdict").innerHTML="<b>"+t("verdictA")+" "+massCity+" "+t("verdictB")+"</b> "+massWhy+". "+t("julyD")+" "+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C ("+dJ.toFixed(1)+"%), "+t("amplD")+" "+Math.abs(r.aA-r.bA).toFixed(1)+" K. "+t("overall")+" <b>"+overall.toFixed(1)+"%</b> — "+warmer+"."
-    +"<br><span class='small'>"+t("yourAns")+": <b>"+pickLabel+"</b> — "+whyTxt+" <b>"+(okPick?t("match"):t("mismatch"))+"</b> · "+t("computed")+": <b>"+massCity+"</b></span>"
-    +"<br><span class='small'>"+t("ansT")+": "+t("mMass")+" <b>"+mark(okPick)+"</b> · "+t("mForm")+" <b>"+mark(okForm)+"</b> · "+t("mWin")+" <b>"+mark(okWin)+"</b> → <b>"+ansScore+"/3</b></span>";
-  $("advice").innerHTML="<div><b>"+r.cityA+" — "+uA.t+"</b>"+strategy(r.aJ,r.aA,r.aR)+"</div><div><b>"+r.cityB+" — "+uB.t+"</b>"+strategy(r.bJ,r.bA,r.bR)+"</div>";
-  $("details").textContent=r.s1+" × "+r.s2+" · "+t("pairW")+" "+(r.pair||"–")+" · "+r.cityA+" vs "+r.cityB+" · "+r.period;
+  const zA=zoneOf(r.cityA), zB=zoneOf(r.cityB);
+  const massDisp=massKey==="EQ"?massCity:(massCity+" ("+(massKey==="A"?zA:zB)+")");
+  $("verdict").innerHTML="<b>"+t("verdictA")+" "+massDisp+" "+t("verdictB")+"</b> "+massWhy+". "+t("julyD")+" "+Math.abs(r.aJ-r.bJ).toFixed(1)+" °C ("+dJ.toFixed(1)+"%), "+t("amplD")+" "+Math.abs(r.aA-r.bA).toFixed(1)+" K. "+t("overall")+" <b>"+overall.toFixed(1)+"%</b> — "+warmer+"."
+    +"<br><span class='small'>"+t("bookRef")+"</span>"
+    +"<br><span class='small'>"+t("yourAns")+": <b>"+pickLabel+"</b> — "+whyTxt+" <b>"+(okPick?t("match"):t("mismatch"))+"</b> · "+t("computed")+": <b>"+massDisp+"</b></span>"
+    +"<br><span class='small'>"+t("ansT")+": "+t("mMass")+" <b>"+mark(okPick)+"</b> · "+t("mForm")+" <b>"+mark(okForm)+"</b> ("+t("computed")+": "+(expFormKey==="EQ"?(LANG==="pt"?"Ambas":"Both"):expForm)+") · "+t("mWin")+" <b>"+mark(okWin)+"</b> ("+t("computed")+": "+(expWinKey==="EQ"?(LANG==="pt"?"Ambas":"Both"):expWin)+") → <b>"+ansScore+"/3</b></span>";
+  $("advice").innerHTML="<div><b>"+r.cityA+" ("+zA+") — "+uA.t+"</b>"+strategyFor(r.cityA,r.aJ,r.aA,r.aR)+"</div><div><b>"+r.cityB+" ("+zB+") — "+uB.t+"</b>"+strategyFor(r.cityB,r.bJ,r.bA,r.bR)+"</div>";
+  $("details").textContent=r.s1+" × "+r.s2+" · "+t("pairW")+" "+(r.pair||"–")+" · "+r.cityA+" ("+zA+") vs "+r.cityB+" ("+zB+") · "+r.period;
   $("result").classList.add("show");
   $("submitBtn").style.display="block";
   last={s1full:r.s1,s2:r.s2,cityA:r.cityA,cityB:r.cityB,aM:r.aM,aJ:r.aJ,aR:r.aR,aA:r.aA,bM:r.bM,bJ:r.bJ,bR:r.bR,bA:r.bA,
     dM:dM.toFixed(1),dJ:dJ.toFixed(1),dR:dR.toFixed(1),dA:dA.toFixed(1),overall:overall.toFixed(1),
-    uA:uA.t,uB:uB.t,mass:massCity,pick:r.pick,win:r.win,form:r.form,ans:ansScore,reasons:r.reasons,why:whyTxt,pair:r.pair,period:r.period,time:new Date().toLocaleString(),lang:LANG};
+    uA:uA.t,uB:uB.t,mass:massDisp,pick:r.pick,win:r.win,form:r.form,ans:ansScore,reasons:r.reasons,why:whyTxt,pair:r.pair,period:r.period,time:new Date().toLocaleString(),lang:LANG};
 }
 $("compareBtn").onclick=()=>{
   const s1=($("s1f").value+" "+$("s1l").value).trim(), s2=($("s2f").value+" "+$("s2l").value).trim();
@@ -436,6 +483,7 @@ function autoScore(r){
 }
 function gradeColor(g){g=+g;if(!isFinite(g))return"#5a6c73";if(g>=16)return"#2e9e62";if(g>=12)return"#b98a1f";if(g>=10)return"#b06a1f";return"#b03a2e";}
 function renderBoard(){
+  if(!$("board"))return;
   const b=loadBoard(),box=$("board");box.innerHTML="";
   if($("csvBtn"))$("csvBtn").textContent=t("csvT");
   if(!b.length){$("stN").textContent="0";$("stG").textContent="–";$("stA").textContent="–";box.innerHTML="<p class='small'>"+t("empty")+"</p>";return;}
@@ -493,7 +541,8 @@ $("submitBtn").onclick=()=>{
   last.lang=LANG;
   const pt=LANG==="pt";
   const subj="IPMA "+(pt?"par":"pair")+" "+(last.pair||"-")+" "+last.cityA+"–"+last.cityB+": "+last.s1full+" × "+last.s2;
-  const body=(pt?"Par ":"Pair ")+(last.pair||"-")+" · "+last.period+"\n"+(pt?"Estudantes: ":"Students: ")+last.s1full+" × "+last.s2+"\n"+last.cityA+": air avg "+last.aM+", July air max "+last.aJ+", total precip "+last.aR+", amplitude "+last.aA+" ("+last.uA+")\n"+last.cityB+": air avg "+last.bM+", July air max "+last.bJ+", total precip "+last.bR+", amplitude "+last.bA+" ("+last.uB+")\nΔ air avg "+last.dM+"% · July air max "+last.dJ+"% · total precip "+last.dR+"% · amplitude "+last.dA+"% · overall "+last.overall+"%\n"+(pt?"Massa térmica (alunos): ":"Thermal mass (students): ")+(last.pick||"-")+"\n"+(pt?"Forma compacta (alunos): ":"Compact form (students): ")+(last.form||"-")+"\n"+(pt?"Janelas maiores (alunos): ":"Larger windows (students): ")+(last.win||"-")+"\n"+(pt?"Massa térmica (calculada): ":"Thermal mass (computed): ")+last.mass+"\n"+(pt?"Respostas: ":"Answers: ")+(last.ans!==undefined?last.ans+"/3":"-")+"\n"+(pt?"Porquê: ":"Why: ")+(last.why||"-");
+  const zA2=zoneOf(last.cityA), zB2=zoneOf(last.cityB);
+  const body=(pt?"Par ":"Pair ")+(last.pair||"-")+" · "+last.period+"\n"+(pt?"Estudantes: ":"Students: ")+last.s1full+" × "+last.s2+"\n"+last.cityA+" ("+zA2+"): air avg "+last.aM+", July air max "+last.aJ+", total precip "+last.aR+", amplitude "+last.aA+" ("+last.uA+")\n"+last.cityB+" ("+zB2+"): air avg "+last.bM+", July air max "+last.bJ+", total precip "+last.bR+", amplitude "+last.bA+" ("+last.uB+")\nΔ air avg "+last.dM+"% · July air max "+last.dJ+"% · total precip "+last.dR+"% · amplitude "+last.dA+"% · overall "+last.overall+"%\n"+(pt?"Massa térmica (alunos): ":"Thermal mass (students): ")+(last.pick||"-")+"\n"+(pt?"Forma compacta (alunos): ":"Compact form (students): ")+(last.form||"-")+"\n"+(pt?"Janelas maiores (alunos): ":"Larger windows (students): ")+(last.win||"-")+"\n"+(pt?"Massa térmica (calculada): ":"Thermal mass (computed): ")+last.mass+"\n"+(pt?"Respostas: ":"Answers: ")+(last.ans!==undefined?last.ans+"/3":"-")+"\n"+(pt?"Porquê: ":"Why: ")+(last.why||"-")+"\nBook: Goncalves & Graca (2004) Conceitos Bioclimaticos, RCCTE I/V, continental Portugal only.";
   window.open("mailto:ncorticos@campus.ul.pt?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body),"_blank");
 };
 applyLang("en");
